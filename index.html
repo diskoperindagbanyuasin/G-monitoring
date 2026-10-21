@@ -1766,6 +1766,79 @@
           </div>
         </div>
       </div>
+
+      <!-- =====================================================================
+           MODUL INTEGRASI: APLIKASI SURAT MASUK DISKOPERINDAG BANYUASIN
+           ===================================================================== -->
+      <div id="suratMasukSection" class="bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-2xl p-6 shadow-sm space-y-4 transition-all">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-700/80 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white flex items-center justify-center shadow-md">
+              <i class="fa-solid fa-envelope-open-text text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+                <span>Aplikasi Surat Masuk & Disposisi</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                  <i class="fa-solid fa-link text-[9px] mr-1"></i>Terhubung
+                </span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Portal persuratan digital kedinasan Diskoperindag Kabupaten Banyuasin</p>
+            </div>
+          </div>
+
+          <!-- KONTROL / AKSI WIDGET SURAT MASUK -->
+          <div class="flex items-center gap-2">
+            <!-- Tombol Buka Tab Baru -->
+            <a href="https://sistemdigitalsuratdiskoperindag.blogspot.com/" target="_blank" rel="noopener noreferrer"
+              class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/70 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition"
+              title="Buka Aplikasi Surat Masuk di Tab Baru">
+              <i class="fa-solid fa-arrow-up-right-from-square text-indigo-500"></i>
+              <span class="hidden sm:inline">Buka Tab Baru</span>
+            </a>
+
+            <!-- Tombol Muat Ulang Iframe -->
+            <button type="button" onclick="refreshSuratMasukIframe()"
+              class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/70 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition"
+              title="Muat Ulang Tampilan Surat Masuk">
+              <i id="iconRefreshSurat" class="fa-solid fa-rotate-right text-cyan-500"></i>
+              <span class="hidden sm:inline">Refresh</span>
+            </button>
+
+            <!-- Tombol Layar Penuh (Fullscreen) Iframe -->
+            <button type="button" onclick="toggleSuratMasukFullscreen()"
+              class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/70 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition"
+              title="Perbesar Layar Penuh">
+              <i id="iconFullscreenSurat" class="fa-solid fa-expand text-amber-500"></i>
+              <span class="hidden sm:inline">Fullscreen</span>
+            </button>
+
+            <!-- Tombol Minimize / Collapse -->
+            <button type="button" onclick="toggleSuratMasukCollapse()" id="btnToggleSuratCollapse"
+              class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition"
+              title="Sembunyikan / Tampilkan Modul Surat Masuk">
+              <i id="iconCollapseSurat" class="fa-solid fa-chevron-up"></i>
+              <span id="textCollapseSurat">Tutup</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- WRAPPER IFRAME -->
+        <div id="suratMasukIframeWrapper" class="relative w-full rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 transition-all duration-300" style="height: 700px;">
+          <!-- Loading placeholder spinner -->
+          <div id="suratMasukLoading" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-100/90 dark:bg-slate-900/90 z-10 transition-opacity duration-300">
+            <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+            <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">Memuat Sistem Surat Masuk Diskoperindag...</p>
+            <p class="text-[11px] text-slate-400 mt-1">https://sistemdigitalsuratdiskoperindag.blogspot.com/</p>
+          </div>
+
+          <iframe id="iframeSuratMasuk" src="https://sistemdigitalsuratdiskoperindag.blogspot.com/"
+            class="w-full h-full border-0 rounded-xl"
+            onload="document.getElementById('suratMasukLoading').style.opacity = '0'; setTimeout(function(){ document.getElementById('suratMasukLoading').style.display = 'none'; }, 300);"
+            allow="camera; microphone; geolocation; clipboard-read; clipboard-write; fullscreen">
+          </iframe>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -9253,6 +9326,70 @@
       if (modal) modal.classList.add('hidden');
       if (window.history && window.history.replaceState) {
         window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    // --- INTEGRASI MODUL SURAT MASUK DISKOPERINDAG ---
+    function refreshSuratMasukIframe() {
+      var iframe = document.getElementById('iframeSuratMasuk');
+      var loading = document.getElementById('suratMasukLoading');
+      var icon = document.getElementById('iconRefreshSurat');
+      if (icon) icon.classList.add('animate-spin');
+      if (loading) {
+        loading.style.display = 'flex';
+        loading.style.opacity = '1';
+      }
+      if (iframe) {
+        iframe.src = iframe.src;
+      }
+      setTimeout(function() {
+        if (icon) icon.classList.remove('animate-spin');
+      }, 1000);
+    }
+
+    function toggleSuratMasukFullscreen() {
+      var wrapper = document.getElementById('suratMasukIframeWrapper');
+      var icon = document.getElementById('iconFullscreenSurat');
+      if (!wrapper) return;
+      if (!document.fullscreenElement) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen();
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        } else if (wrapper.msRequestFullscreen) {
+          wrapper.msRequestFullscreen();
+        }
+        if (icon) icon.className = 'fa-solid fa-compress text-amber-500';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+        if (icon) icon.className = 'fa-solid fa-expand text-amber-500';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', function() {
+      var icon = document.getElementById('iconFullscreenSurat');
+      if (icon) {
+        icon.className = document.fullscreenElement 
+          ? 'fa-solid fa-compress text-amber-500' 
+          : 'fa-solid fa-expand text-amber-500';
+      }
+    });
+
+    function toggleSuratMasukCollapse() {
+      var wrapper = document.getElementById('suratMasukIframeWrapper');
+      var icon = document.getElementById('iconCollapseSurat');
+      var text = document.getElementById('textCollapseSurat');
+      if (!wrapper) return;
+      if (wrapper.classList.contains('hidden')) {
+        wrapper.classList.remove('hidden');
+        if (icon) icon.className = 'fa-solid fa-chevron-up';
+        if (text) text.textContent = 'Tutup';
+      } else {
+        wrapper.classList.add('hidden');
+        if (icon) icon.className = 'fa-solid fa-chevron-down';
+        if (text) text.textContent = 'Buka';
       }
     }
   </script>
