@@ -12,12 +12,17 @@ yarn-debug.log*
 yarn-error.log*
 *.log
 
-# Sensitive credentials & environment
+# Sensitive credentials, backend & local data
 .env
 .env.*
 .clasprc.json
+.clasp.json
+.claspignore
 credentials.json
 token.json
+data/
+config.json
+Code.gs
 
 # Operating System files
 .DS_Store
